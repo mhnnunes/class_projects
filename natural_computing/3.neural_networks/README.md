@@ -6,15 +6,24 @@ This work consists in a supervised learning problem, which's goal is to find pro
 
 The training dataset contained 1429 labeled examples, each one with 8 attributes.  
 
-### Implementation  
+### Implementation   
 
-This work was implemented in _Python_, using _TensorFlow_ as library for the Neural Net. We used a 3-layer Multi-Layer Perceptron. The hidden layer contained 16 neurons, each using _ReLU_ as activation function. The output layer's activation function was _Softmax_. The cost function used was _Categorical Cross-Entropy_, and the training was done using _Mini-Batch Gradient Descent_ with a batch size of 32 examples. The training stage was done using _3-fold Cross Validation_, to avoid overfitting the model.   
+This work was implemented in _Python_, using _Keras_ as Neural Nets library with _TensorFlow_ as backend. We built a 3-layered MLP (_Multi-Layer Perceptron_). The hidden layer contained 16 neurons, each using _ReLU_ as activation function. The output layer's activation function was _Softmax_. The cost function used was _Categorical Cross-Entropy_, and the training was done using _Mini-Batch Gradient Descent_ with a batch size of 32 examples. The training stage was done using _3-fold Cross Validation_, to avoid overfitting the model.   
 
-### Results
+### Results  
 
 The results showed that after 250 epochs in training phase, an accuracy of 62% was achieved. This model, applied to validation data, obtained an accuracy of 58%.   
 
 Train accuracy across epochs:  
-![train] [trainacc]  
+![train] (https://github.com/mhnnunes/class_projects/raw/master/natural_computing/3.neural_networks/final_line.png "Train accuracy across epochs")  
 
-[trainacc] : https://github.com/mhnnunes/class_projects/raw/master/natural_computing/3.neural_networks/final_line.png "Train accuracy across epochs"  
+Train accuracy vs test accuracy:  
+![traintest] (https://github.com/mhnnunes/class_projects/raw/master/natural_computing/3.neural_networks/final_train_test_2.png "Train accuracy vs. Test Accuracy")  
+
+### Dependencies  
+
+To install the dependencies necessary to run this code, just run the commands below in your system:
+
+```  
+pip install -r requirements.txt  
+```  
