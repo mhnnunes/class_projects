@@ -18,7 +18,7 @@ Train accuracy across epochs:
 ![train](img/line.png)  
 
 Train accuracy vs test accuracy:  
-![traintest] (img/final_train_test_2.png)  
+![traintest](img/final_train_test_2.png)  
 
 ### Dependencies  
 
