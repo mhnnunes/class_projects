@@ -15,10 +15,10 @@ This work was implemented in _Python_, using _Keras_ as Neural Nets library with
 The results showed that after 250 epochs in training phase, an accuracy of 62% was achieved. This model, applied to validation data, obtained an accuracy of 58%.   
 
 Train accuracy across epochs:  
-![train] (https://github.com/mhnnunes/class_projects/blob/master/natural_computing/3.neural_networks/final_line.png?raw=true "Train accuracy across epochs")  
+![train] (./final_line.png "Train accuracy across epochs")  
 
 Train accuracy vs test accuracy:  
-![traintest] (https://github.com/mhnnunes/class_projects/blob/master/natural_computing/3.neural_networks/final_train_test_2.png?raw=true "Train accuracy vs. Test Accuracy")  
+![traintest] (./final_train_test_2.png "Train accuracy vs. Test Accuracy")  
 
 ### Dependencies  
 
