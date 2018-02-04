@@ -13,3 +13,8 @@ This work was implemented in _Python_, using _TensorFlow_ as library for the Neu
 ### Results
 
 The results showed that after 250 epochs in training phase, an accuracy of 62% was achieved. This model, applied to validation data, obtained an accuracy of 58%.   
+
+Train accuracy across epochs:  
+![train] [trainacc]  
+
+[trainacc] : https://github.com/mhnnunes/class_projects/raw/master/natural_computing/3.neural_networks/final_line.png "Train accuracy across epochs"  
