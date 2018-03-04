@@ -28,16 +28,16 @@ input_filename output_filename
 
 Terms between brackets must be replaced by adequate parameters. The list of parameters and their domains is the following:  
 
-* -n, --neurons [int] (default: 8) This parameter sets the number of neurons in each hidden layer
-* --hidden [int] (default: 1) This parameter sets the number of hidden layers in the network
-* -a, --activation [’relu’, ’sigmoid’, ’softmax’] (default: ’relu’) This parameter sets the activaction function used in the neurons
-* -e, --epochs [int] (default: 100) This parameter sets the number of epochs for the training phase
-* -b, --batch [int] (default: 10) This parameter sets the batch size given to the network in each epoch (Mini-Batch Gradient Descent)
-* -lr, --learning-rate [float] (default: 0.1) This parameter sets the learning rate of the network
-* -d, --decay [float] (default: 0.00005) This parameter sets a decay value for the network's learning rate
-* --seed [int] (default: 1) This parameter sets the program's random seed
-* input_filename [str] This parameter is mandatory, and represents the path to the program's input file
-* output_filename [str] This parameter is mandatory, and represents the path to the program's input file
+* -n, --neurons [int] (default: 8) This parameter sets the number of neurons in each hidden layer  
+* --hidden [int] (default: 1) This parameter sets the number of hidden layers in the network  
+* -a, --activation [’relu’, ’sigmoid’, ’softmax’] (default: ’relu’) This parameter sets the activaction function used in the neurons  
+* -e, --epochs [int] (default: 100) This parameter sets the number of epochs for the training phase  
+* -b, --batch [int] (default: 10) This parameter sets the batch size given to the network in each epoch (Mini-Batch Gradient Descent)  
+* -lr, --learning-rate [float] (default: 0.1) This parameter sets the learning rate of the network  
+* -d, --decay [float] (default: 0.00005) This parameter sets a decay value for the network's learning rate  
+* --seed [int] (default: 1) This parameter sets the program's random seed  
+* input_filename [str] This parameter is mandatory, and represents the path to the program's input file  
+* output_filename [str] This parameter is mandatory, and represents the path to the program's input file  
 
 ### Results  
 
