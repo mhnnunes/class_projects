@@ -27,6 +27,11 @@ In order to measure the similarity between social media texts and news media tex
 `mv geckodriver /opt`  
 `echo "export PATH=$PATH:/opt/geckodriver" >> ~/.bashrc`  
 
+Another option is to just import the requirements via file:  
+```bash  
+pip install -r requirements.txt  
+```  
+This will import the dependencies required to run the code.
 ### Important Remarks  
 
 * The BeautifulSoup library is used for parsing and manipulating DOM elements on loaded pages  
