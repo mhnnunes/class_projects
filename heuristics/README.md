@@ -2,9 +2,9 @@
 
 This repository holds the code used in the Heuristics and Metaheuristics class. It is divided into two subdirectories:   
 
-* [implementation](/implementation)
+* [implementation](heuristics/implementation)
     * This directory contains code used in the implementation assignments
-* [research](/research)
+* [research](heuristics/research)
     * This directory holds code used in the research project
     
 
