@@ -1,15 +1,12 @@
 
 
-#include <iostream>
 #include <string>
-#include <sstream>
 #include <vector>
+#include <sstream>
 #include <utility>
+#include <iostream>
 
 #include "io.h"
-#include "graph.h"
-
-using namespace std;
 
 #define OPENING_LINES 6
 

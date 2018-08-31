@@ -4,15 +4,15 @@
 #include <cstdlib>
 
 #include "io.h"
-#include "graph.h"
 #include "algorithm.h"
 
 using namespace std;
 
 
 int main(int argc, char* argv[]){
-    std::vector< pdd >  cities;
     bool att = false;
+    std::vector< pdd >  cities;
+    
     readInput(cities, att);
 
     cout << heuristics_ConstructiveTSP(cities, att) << endl;
