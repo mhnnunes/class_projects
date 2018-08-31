@@ -1,9 +1,11 @@
-#include<iostream>
+
+
+#include <iostream>
 #include <string>
-#include<sstream>
-#include<vector>
-#include<utility> 
-#include<cstdio>
+#include <sstream>
+#include <vector>
+#include <utility>
+
 #include "io.h"
 #include "graph.h"
 
@@ -11,11 +13,12 @@ using namespace std;
 
 #define OPENING_LINES 6
 
-void readInput(std::vector<pdd>  &cities){
+void readInput(std::vector<pdd>  &cities, bool &att){
     // Read 6 opening lines
     int ncities = 0;
     std::string raw_input;
     std::string line_type;
+    std::string ewt;
     for (int i = 0; i < OPENING_LINES; ++i)
     {
         std::getline(std::cin, raw_input);
@@ -25,7 +28,12 @@ void readInput(std::vector<pdd>  &cities){
         // cout << raw_input << endl;
         if(line_type == "DIMENSION:"){
             ss >> ncities;
-            std::cout << "ncities: " << ncities << std::endl;
+            // std::cout << "ncities: " << ncities << std::endl;
+        }
+        if(line_type == "EDGE_WEIGHT_TYPE:"){
+            ss >> ewt;
+            if(ewt == "ATT") att = true;
+            // std::cout << "ncities: " << ncities << std::endl;
         }
     }
     double id, x, y;
