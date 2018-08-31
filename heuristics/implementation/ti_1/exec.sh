@@ -12,7 +12,8 @@ RESULT_FILE=$CURDIR/out_time.log
 echo "" > $RESULT_FILE
 
 # Begin test
-for f in `find $DATASETS -name *.tsp|sort`;
+for f in `find $DATASETS -name *.tsp| sort -V `;
+#for f in `find $DATASETS - name *.tsp | sort -V`;
 do
   echo "Testing file: ${f}"
 
@@ -27,9 +28,10 @@ do
   # sed -i "s/EDGE_WEIGHT_TYPE\ :/EDGE_WEIGHT_TYPE:/g" $f
 
   # Execute and save results from program
+  BNAME=`basename $f`
   TIME_START=`date +%s.%N`
   OUTPUT=`$CURDIR/tp1 < $f`
   TIME_END=`date +%s.%N`
   TIME_DIFF=`echo ${TIME_END} - ${TIME_START}| bc`
-  echo "${OUTPUT} ${f} ${TIME_DIFF}" >> $RESULT_FILE
+  echo "${OUTPUT} ${BNAME} ${TIME_DIFF}" >> $RESULT_FILE
 done

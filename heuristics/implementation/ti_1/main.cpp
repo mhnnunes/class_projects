@@ -11,9 +11,9 @@ using namespace std;
 
 
 int main(int argc, char* argv[]){
-	std::vector< pdd >  cities;
+    std::vector< pdd >  cities;
     bool att = false;
-	readInput(cities, att);
-    // cout << "ATT: " << att<< endl;
+    readInput(cities, att);
+
     cout << heuristics_ConstructiveTSP(cities, att) << endl;
 }

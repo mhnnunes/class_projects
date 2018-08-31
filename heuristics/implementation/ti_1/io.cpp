@@ -24,16 +24,12 @@ void readInput(std::vector<pdd>  &cities, bool &att){
         std::getline(std::cin, raw_input);
         std::stringstream ss(raw_input);
         ss >> line_type;
-        // cout << "Line type: " << line_type << endl;
-        // cout << raw_input << endl;
         if(line_type == "DIMENSION:"){
             ss >> ncities;
-            // std::cout << "ncities: " << ncities << std::endl;
         }
         if(line_type == "EDGE_WEIGHT_TYPE:"){
             ss >> ewt;
             if(ewt == "ATT") att = true;
-            // std::cout << "ncities: " << ncities << std::endl;
         }
     }
     double id, x, y;
