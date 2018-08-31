@@ -13,7 +13,6 @@ echo "" > $RESULT_FILE
 
 # Begin test
 for f in `find $DATASETS -name *.tsp| sort -V `;
-#for f in `find $DATASETS - name *.tsp | sort -V`;
 do
   echo "Testing file: ${f}"
 
