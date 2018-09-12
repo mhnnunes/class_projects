@@ -15,7 +15,7 @@
 
 #include <iostream>
 
-#include "io.h"
+#include "../lib/io.h"
 #include "algorithm.h"
 
 using namespace std;
