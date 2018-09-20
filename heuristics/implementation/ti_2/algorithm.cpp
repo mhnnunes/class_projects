@@ -161,6 +161,7 @@ lld search_2Opt_TSP(std::vector<pdd> &cities,
             if(curcost < bestcost){
                 bestcost = curcost;
                 tour = new_tour;
+                // return bestcost; // First improving?
             }
         }
     }
