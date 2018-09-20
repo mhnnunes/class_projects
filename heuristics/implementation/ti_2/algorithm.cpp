@@ -123,11 +123,7 @@ lld heuristics_VND_TSP(std::vector<pdd> &cities,
 }
 
 void swap_2Opt(std::vector<int> &tour,
-              int i, int k, bool att){
-    // double dist = 0.0;
-    // lld totalcost = 0.0;
-    // lld newpathcost = 0.0;
-
+               int i, int k, bool att){
     int swapaux = 0;
     int ncities = ((int) tour.size()) - 1;
     // Special case when i = 0: swapping tour beginning
@@ -150,14 +146,22 @@ void swap_2Opt(std::vector<int> &tour,
 
 lld search_2Opt_TSP(std::vector<pdd> &cities,
                     std::vector<int> &tour,
+                    lld initialcost,
                     int ncities, bool att){
-    lld bestcost = 0.0;
+    lld bestcost = initialcost;
+    lld curcost = 0.0;
     for (int i = 0; i < ncities - 1; i++){
         for (int k = i + 1; k < ncities; k++){
             // Swap nodes i and k in tour
+            std::vector<int> new_tour(tour.begin(), tour.end());
             // Calculate new tour distance
-            swap_2Opt(tour, i, k, att);
+            swap_2Opt(new_tour, i, k, att);
+            curcost = calculate_tour_cost(new_tour, cities, att);
             // If new distance < best distance: replace
+            if(curcost < bestcost){
+                bestcost = curcost;
+                tour = new_tour;
+            }
         }
     }
     return bestcost;

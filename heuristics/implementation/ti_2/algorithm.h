@@ -47,6 +47,7 @@ void swap_2Opt(std::vector<int> &tour,
 
 lld search_2Opt_TSP(std::vector<pdd> &cities,
 					std::vector<int> &tour,
+                    lld initialcost,
 					int ncities, bool att);
 
 lld search_3Opt_TSP(std::vector<pdd> &cities,
