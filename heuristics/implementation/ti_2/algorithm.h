@@ -25,10 +25,36 @@ typedef std::pair<double, int> pdi;
 typedef std::pair<double, double> pdd;
 
 double euc_2d(pdd city1, pdd city2);
+
 double att_dist(pdd city1, pdd city2);
-double heuristics_ConstructiveTSP(std::vector<pdd> &cities,
-								  std::vector<pdi> &tour,
-								  int ncities, bool att);
-void print_tour(std::vector<pdi> tour);
+
+double calculateDist(pdd city1, pdd city2, bool att);
+
+lld calculate_tour_cost(std::vector<int> &tour, std::vector<pdd> &cities,
+                        bool att);
+
+lld heuristics_ConstructiveTSP(std::vector<pdd> &cities,
+						       std::vector<int> &tour,
+						       int ncities, bool att);
+
+lld heuristics_VND_TSP(std::vector<pdd> &cities,
+					   std::vector<int> &tour,
+					   int ncities, bool att);
+
+void swap_2Opt(std::vector<int> &tour,
+               int i, int k,
+               bool att);
+
+lld search_2Opt_TSP(std::vector<pdd> &cities,
+					std::vector<int> &tour,
+					int ncities, bool att);
+
+lld search_3Opt_TSP(std::vector<pdd> &cities,
+					std::vector<int> &tour,
+					int ncities, bool att);
+
+void swap_3Opt(std::vector<int> &tour, int i, int k, int ncities);
+
+void print_tour(std::vector<int> tour, std::vector<pdd> &cities);
 
 #endif

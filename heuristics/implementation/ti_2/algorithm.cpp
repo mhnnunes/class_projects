@@ -31,8 +31,23 @@ double att_dist(pdd city1, pdd city2){
                 pow((city1.y - city2.y), 2)) / 10.0));
 }
 
+double calculateDist(pdd city1, pdd city2, bool att){
+    return (att)? att_dist(city1, city2) :
+                  euc_2d(city1, city2);
+}
 
-double heuristics_ConstructiveTSP(std::vector<pdd> &cities, std::vector<pdi> &tour, int ncities, bool att){
+lld calculate_tour_cost(std::vector<int> &tour, std::vector<pdd> &cities,
+                        bool att){
+    lld totalcost = 0.0;
+    for (int i = 0; i < ((int) tour.size()) - 1; i++){
+        totalcost += calculateDist(cities[tour[i]], cities[tour[i+1]], att);
+    }
+    return totalcost;
+}
+
+lld heuristics_ConstructiveTSP(std::vector<pdd> &cities,
+                               std::vector<int> &tour,
+                               int ncities, bool att){
 	// Greedy heuristic for constructing a TSP path in a complete graph
     int cur = 0;
     double dist;
@@ -42,16 +57,16 @@ double heuristics_ConstructiveTSP(std::vector<pdd> &cities, std::vector<pdi> &to
     std::vector<bool> visited(ncities, false);
 
     visited[cur] = 1; // Mark current city as visited
-    tour[0].first = 0.0; // The distance from city -1 to the first is 0
-    tour[0].second = cur; // Add the first city to tour
+    tour[0] = cur; // Add the first city to tour
     nvisited++;
 
     while(nvisited < ncities){ // Iterate through all cities: O(n)
         nearest_neighbor.first = INF;
         for (int i = 0; i < ncities; ++i){ // Iterate through all cities: O(n)
-            if(!visited[i] && i != cur){ // Only calculate distance to unvisited cities
+            // Only calculate distance to unvisited cities
+            if(!visited[i] && i != cur){
                 // Calculate distance between cities: O(1)
-                dist = (att)? att_dist(cities[cur], cities[i]) : euc_2d(cities[cur], cities[i]);
+                dist = calculateDist(cities[cur], cities[i], att);
                 if(dist < nearest_neighbor.first){
                     nearest_neighbor.first = dist;
                     nearest_neighbor.second = i;
@@ -59,8 +74,7 @@ double heuristics_ConstructiveTSP(std::vector<pdd> &cities, std::vector<pdi> &to
             }
         }
         // Add closest city to tour
-        tour[nvisited].first = nearest_neighbor.first;
-        tour[nvisited].second = nearest_neighbor.second;
+        tour[nvisited] = nearest_neighbor.second;
         // Add its cost to the total
         totalcost += nearest_neighbor.first;
         cur = nearest_neighbor.second;
@@ -69,18 +83,82 @@ double heuristics_ConstructiveTSP(std::vector<pdd> &cities, std::vector<pdi> &to
     }
     // Add edge from last city to first
     int i = 0;
-    dist = (att)? att_dist(cities[cur], cities[i]) : euc_2d(cities[cur], cities[i]);
-    tour[nvisited].first = dist;
-    tour[nvisited].second = i;
+    dist = calculateDist(cities[cur], cities[i], att);
+    tour[nvisited] = i;
     totalcost += dist;
     return totalcost;
 }
 
-void print_tour(std::vector<pdi> tour){
+void print_tour(std::vector<int> tour, std::vector<pdd> &cities){
     std::cout << "PRINTING TOUR" << std::endl;
-    std::cout << "city:cost_to_it -> nextcity:cost_to_it" << std::endl;
+    std::cout << "city -> nextcity" << std::endl;
     for(auto &it: tour){
-        std::cout << it.second << ":" << it.first << "-> " ;
+        std::cout << it << "-> " ;
     }
     std::cout << std::endl;
+}
+
+lld heuristics_VND_TSP(std::vector<pdd> &cities,
+                       std::vector<int> &tour,
+                       int ncities, bool att){
+    // lld curcost = 0.0;
+    lld bestcost = 0.0;
+    // int nneighborhoods = 2; // Number of neighborhoods for local search
+
+    // Generate initial solution using the constructive heuristic
+    bestcost = heuristics_ConstructiveTSP(cities, tour, ncities, att);
+    // Tour will be stored in the tour variable
+    // int l = 0;
+    // while(l < nneighborhoods){
+    //     // Search for improvement on neighborhood l
+    //     //     - neighborhood 0: 2Opt
+    //     //     - neighborhood 1: 3Opt
+    //     // If cost of new solution is better than cost of current solution
+    //     // Store new solution
+    //     // Go back to first neighborhood
+    //     // Otherwise next neighborhood
+
+    // }
+    return bestcost;
+}
+
+void swap_2Opt(std::vector<int> &tour,
+              int i, int k, bool att){
+    // double dist = 0.0;
+    // lld totalcost = 0.0;
+    // lld newpathcost = 0.0;
+
+    int swapaux = 0;
+    int ncities = ((int) tour.size()) - 1;
+    // Special case when i = 0: swapping tour beginning
+    if(i == 0){
+        swapaux = tour[i];
+        tour[i] = tour[k];
+        tour[ncities] = tour[k];
+        tour[k] = swapaux;
+        // Replace first
+        i++;
+        k--;
+    }
+    for (int index = i, revindex = k; index < revindex; index++, revindex--){
+        // Swap cities
+        swapaux = tour[index];
+        tour[index] = tour[revindex];
+        tour[revindex] = swapaux;
+    }
+}
+
+lld search_2Opt_TSP(std::vector<pdd> &cities,
+                    std::vector<int> &tour,
+                    int ncities, bool att){
+    lld bestcost = 0.0;
+    for (int i = 0; i < ncities - 1; i++){
+        for (int k = i + 1; k < ncities; k++){
+            // Swap nodes i and k in tour
+            // Calculate new tour distance
+            swap_2Opt(tour, i, k, att);
+            // If new distance < best distance: replace
+        }
+    }
+    return bestcost;
 }
