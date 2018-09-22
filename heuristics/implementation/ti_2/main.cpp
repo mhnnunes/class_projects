@@ -30,18 +30,7 @@ int main(int argc, char* argv[]){
     int ncities = (int) cities.size();
     vector< int > tour(ncities+1);
 
-    // cout << heuristics_ConstructiveTSP(cities, tour, ncities, att) << endl;
     lld cost = heuristics_VND_TSP(cities, tour, ncities, att);
     cout << cost << endl;
-    print_tour(tour, cities);
-    cost = search_2Opt_TSP(cities, tour, cost, ncities, att);
-    cout<< "Cost after search 2opt: " << endl;
-    cout << cost << endl;
-    print_tour(tour, cities);
-    // std::vector<int> new_tour(tour.begin(), tour.end());
-    // swap_2Opt(new_tour, 0, 5, att);
-    // swap_2Opt(tour, 0, 5, att);
-    // print_tour(new_tour, cities);
-    // cout << calculate_tour_cost(new_tour, cities, att) << endl;
     // print_tour(tour, cities);
 }

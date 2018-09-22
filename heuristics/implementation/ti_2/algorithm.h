@@ -21,7 +21,8 @@
 #include <utility>
 
 typedef long double lld;
-typedef std::pair<double, int> pdi; 
+typedef std::pair<int, int> pii; 
+typedef std::pair<double, int> pdi;
 typedef std::pair<double, double> pdd;
 
 double euc_2d(pdd city1, pdd city2);
@@ -41,9 +42,9 @@ lld heuristics_VND_TSP(std::vector<pdd> &cities,
 					   std::vector<int> &tour,
 					   int ncities, bool att);
 
-void swap_2Opt(std::vector<int> &tour,
-               int i, int k,
-               bool att);
+void reverse_path(std::vector<int> &tour,
+                  int i, int k,
+                  bool att);
 
 lld search_2Opt_TSP(std::vector<pdd> &cities,
 					std::vector<int> &tour,
@@ -52,9 +53,8 @@ lld search_2Opt_TSP(std::vector<pdd> &cities,
 
 lld search_3Opt_TSP(std::vector<pdd> &cities,
 					std::vector<int> &tour,
+                    lld initialcost,
 					int ncities, bool att);
-
-void swap_3Opt(std::vector<int> &tour, int i, int k, int ncities);
 
 void print_tour(std::vector<int> tour, std::vector<pdd> &cities);
 

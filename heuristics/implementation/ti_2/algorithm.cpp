@@ -19,6 +19,8 @@
 #define x first
 #define y second
 
+using namespace std;
+
 double euc_2d(pdd city1, pdd city2){
 	// Euclidean distance
     return round(sqrt(pow((city1.x - city2.x), 2) +
@@ -39,7 +41,7 @@ double calculateDist(pdd city1, pdd city2, bool att){
 lld calculate_tour_cost(std::vector<int> &tour, std::vector<pdd> &cities,
                         bool att){
     lld totalcost = 0.0;
-    for (int i = 0; i < ((int) tour.size()) - 1; i++){
+    for (int i = 0; i < ((int) tour.size()) - 1; i++){ // O(n)
         totalcost += calculateDist(cities[tour[i]], cities[tour[i+1]], att);
     }
     return totalcost;
@@ -101,31 +103,57 @@ void print_tour(std::vector<int> tour, std::vector<pdd> &cities){
 lld heuristics_VND_TSP(std::vector<pdd> &cities,
                        std::vector<int> &tour,
                        int ncities, bool att){
-    // lld curcost = 0.0;
+    lld curcost = 0.0;
     lld bestcost = 0.0;
-    // int nneighborhoods = 2; // Number of neighborhoods for local search
+    int nneighborhoods = 2; // Number of neighborhoods for local search
+    int noimprovement = 0;
 
     // Generate initial solution using the constructive heuristic
     bestcost = heuristics_ConstructiveTSP(cities, tour, ncities, att);
     // Tour will be stored in the tour variable
-    // int l = 0;
-    // while(l < nneighborhoods){
-    //     // Search for improvement on neighborhood l
-    //     //     - neighborhood 0: 2Opt
-    //     //     - neighborhood 1: 3Opt
-    //     // If cost of new solution is better than cost of current solution
-    //     // Store new solution
-    //     // Go back to first neighborhood
-    //     // Otherwise next neighborhood
+    int l = 0;
+    while(l < nneighborhoods && noimprovement < 10){
+        // Search for improvement on neighborhood l
+        //     - neighborhood 0: 2Opt
+        //     - neighborhood 1: 3Opt
+        if(l == 0){
+            curcost = search_2Opt_TSP(cities, tour, bestcost, ncities, att);
+            if(curcost < bestcost){
+                // If cost of new solution is better than cost of current solution
+                // Store new solution
+                bestcost = curcost;
+                noimprovement = 0;
+                // Go back to first neighborhood
+                l = 0;
+            }else { // Otherwise next neighborhood
+                noimprovement++;
+                l = 1;
+            }
+        }
+        if(l == 1){
+            curcost = search_3Opt_TSP(cities, tour, bestcost, ncities, att);
+            if(curcost < bestcost){
+                // If cost of new solution is better than cost of current solution
+                // Store new solution
+                bestcost = curcost;
+                noimprovement = 0;
+                // Go back to first neighborhood
+                l = 0;
+            }else { // Otherwise next neighborhood
+                noimprovement++;
+                l = 1;
+            }
+        }
 
-    // }
+    }
     return bestcost;
 }
 
-void swap_2Opt(std::vector<int> &tour,
+void reverse_path(std::vector<int> &tour,
                int i, int k, bool att){
     int swapaux = 0;
     int ncities = ((int) tour.size()) - 1;
+    if(k < i) swap(i, k);
     // Special case when i = 0: swapping tour beginning
     if(i == 0){
         swapaux = tour[i];
@@ -138,9 +166,7 @@ void swap_2Opt(std::vector<int> &tour,
     }
     for (int index = i, revindex = k; index < revindex; index++, revindex--){
         // Swap cities
-        swapaux = tour[index];
-        tour[index] = tour[revindex];
-        tour[revindex] = swapaux;
+        swap(tour[index], tour[revindex]);
     }
 }
 
@@ -155,13 +181,117 @@ lld search_2Opt_TSP(std::vector<pdd> &cities,
             // Swap nodes i and k in tour
             std::vector<int> new_tour(tour.begin(), tour.end());
             // Calculate new tour distance
-            swap_2Opt(new_tour, i, k, att);
+            reverse_path(new_tour, i, k, att);
             curcost = calculate_tour_cost(new_tour, cities, att);
             // If new distance < best distance: replace
             if(curcost < bestcost){
                 bestcost = curcost;
                 tour = new_tour;
-                // return bestcost; // First improving?
+                return bestcost; // First improving
+            }
+        }
+    }
+    return bestcost;
+}
+
+
+lld search_3Opt_TSP(std::vector<pdd> &cities,
+                    std::vector<int> &tour,
+                    lld initialcost,
+                    int ncities, bool att){
+    lld bestcost = initialcost;
+    lld curcost = 0.0;
+    for (int i = 0; i < ncities - 2; i++){
+        for (int j = i + 1; j < ncities - 1; j++){
+            for (int k = j + 1; k < ncities; k++){
+                // Make swapping combinations
+                // Consider a path like:
+                // A - i - i+1 - B - j - j+1 - C - k - k+1 - A
+                // Segment A is between k and i-1 [k, i)
+                // Segment B is between i and j-1 [i ,j)
+                // Segment C is between j and k-1 [j, k)
+                // First try: Reverse A, which equals reverse BC
+                // Make new tour
+                std::vector<int> new_tour(tour.begin(), tour.end());
+                reverse_path(new_tour, i, k-1, att); // Revert BC
+                curcost = calculate_tour_cost(new_tour, cities, att);
+                // If new distance < best distance: replace
+                if(curcost < bestcost){
+                    bestcost = curcost;
+                    tour = new_tour;
+                    return bestcost; // First improving
+                }
+                // Second try: Reverse C
+                new_tour.assign(tour.begin(), tour.end());
+                reverse_path(new_tour, j, k-1, att); // Revert C
+                curcost = calculate_tour_cost(new_tour, cities, att);
+                // If new distance < best distance: replace
+                if(curcost < bestcost){
+                    bestcost = curcost;
+                    tour = new_tour;
+                    return bestcost; // First improving
+                }
+                // Third try: Reverse B
+                new_tour.assign(tour.begin(), tour.end());
+                reverse_path(new_tour, i, j-1, att); // Revert B
+                curcost = calculate_tour_cost(new_tour, cities, att);
+                // If new distance < best distance: replace
+                if(curcost < bestcost){
+                    bestcost = curcost;
+                    tour = new_tour;
+                    return bestcost; // First improving
+                }
+                // Fourth try: Reverse A, then revert B, which means
+                // revert BC then revert B
+                new_tour.assign(tour.begin(), tour.end());
+                reverse_path(new_tour, i, k-1, att); // Revert BC
+                reverse_path(new_tour, i, j-1, att); // Revert B
+                curcost = calculate_tour_cost(new_tour, cities, att);
+                // If new distance < best distance: replace
+                if(curcost < bestcost){
+                    bestcost = curcost;
+                    tour = new_tour;
+                    return bestcost; // First improving
+                }
+
+                // Fifth try: Reverse A, then revert C, which means
+                // revert BC then revert C
+                new_tour.assign(tour.begin(), tour.end());
+                reverse_path(new_tour, i, k-1, att); // Revert BC
+                reverse_path(new_tour, j, k-1, att); // Revert C
+                curcost = calculate_tour_cost(new_tour, cities, att);
+                // If new distance < best distance: replace
+                if(curcost < bestcost){
+                    bestcost = curcost;
+                    tour = new_tour;
+                    return bestcost; // First improving
+                }
+
+                // Sixth try: Reverse B, then revert C
+                new_tour.assign(tour.begin(), tour.end());
+                reverse_path(new_tour, i, j-1, att); // Revert B
+                reverse_path(new_tour, j, k-1, att); // Revert C
+                curcost = calculate_tour_cost(new_tour, cities, att);
+                // If new distance < best distance: replace
+                if(curcost < bestcost){
+                    bestcost = curcost;
+                    tour = new_tour;
+                    return bestcost; // First improving
+                }
+
+                // Seventh try: Reverse A, then B, then C
+                // which means: revert BC, then B, then C
+                new_tour.assign(tour.begin(), tour.end());
+                reverse_path(new_tour, i, k-1, att); // Revert BC
+                reverse_path(new_tour, i, j-1, att); // Revert B
+                reverse_path(new_tour, j, k-1, att); // Revert C
+                curcost = calculate_tour_cost(new_tour, cities, att);
+                // If new distance < best distance: replace
+                if(curcost < bestcost){
+                    bestcost = curcost;
+                    tour = new_tour;
+                    return bestcost; // First improving
+                }                
             }
         }
     }
