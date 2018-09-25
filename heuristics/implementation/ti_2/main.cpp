@@ -30,10 +30,7 @@ int main(int argc, char* argv[]){
     int ncities = (int) cities.size();
     vector< int > tour(ncities+1);
 
-    // cout << heuristics_ConstructiveTSP(cities, tour, ncities, att) << endl;
-    cout << heuristics_VND_TSP(cities, tour, ncities, att) << endl;
-    print_tour(tour, cities);
-    swap_2Opt(tour, 0, 5, att);
-    print_tour(tour, cities);
-    cout << calculate_tour_cost(tour, cities, att) << endl;
+    lld cost = heuristics_VND_TSP(cities, tour, ncities, att);
+    cout << cost << endl;
+    // print_tour(tour, cities);
 }
