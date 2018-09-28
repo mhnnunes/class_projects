@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 
-from sys import argv
 import pandas as pd
+from sys import argv
 
 
 def read_input(filename):
