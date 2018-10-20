@@ -65,6 +65,17 @@ lld search_3Opt_TSP(std::vector< std::vector< double> > &distMatrix,
                     lld initialcost,
                     int ncities, bool att);
 
-void print_tour(std::vector<int> tour, std::vector<pdd> &cities);
+void add_tour_to_tabu(std::vector< std::vector< pii > > &tabulist,
+                      std::vector<int> &new_tour,
+                      int ncities, int tabu_solution);
+
+void print_tabu_list(std::vector< std::vector< pii > > &tabulist,
+                     int ncities);
+
+bool tour_in_tabu_list(std::vector< std::vector< pii > > &tabulist,
+                       std::vector<int> &tour,
+                       int ncities);
+
+void print_tour(std::vector<int> tour);
 
 #endif

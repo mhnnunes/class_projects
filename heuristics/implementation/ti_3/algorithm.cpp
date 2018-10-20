@@ -82,7 +82,6 @@ lld heuristics_ConstructiveTSP(vector< vector< double> > &distMatrix,
             // Only calculate distance to unvisited cities
             if(!visited[i] && i != cur){
                 // Calculate distance between cities: O(1)
-                // dist = calculateDist(cities[cur], cities[i], att);
                 dist = distMatrix[cur][i];
                 if(dist < nearest_neighbor.first){
                     nearest_neighbor.first = dist;
@@ -100,14 +99,13 @@ lld heuristics_ConstructiveTSP(vector< vector< double> > &distMatrix,
     }
     // Add edge from last city to first
     int i = 0;
-    // dist = calculateDist(cities[cur], cities[i], att);
     dist = distMatrix[cur][i];
     tour[nvisited] = i;
     totalcost += dist;
     return totalcost;
 }
 
-void print_tour(std::vector<int> tour, std::vector<pdd> &cities){
+void print_tour(std::vector<int> tour){
     std::cout << "PRINTING TOUR" << std::endl;
     std::cout << "city -> nextcity" << std::endl;
     for(auto &it: tour){
@@ -313,18 +311,86 @@ lld search_3Opt_TSP(vector< vector< double> > &distMatrix,
     return bestcost;
 }
 
+void add_tour_to_tabu(std::vector< std::vector< pii > > &tabulist,
+                      std::vector<int> &new_tour,
+                      int ncities, int tabu_solution){
+    // Add first city
+    tabulist[tabu_solution][new_tour[0]] = pii(new_tour[ncities - 1],
+                                               new_tour[1]);
+    // Add last city
+    tabulist[tabu_solution][new_tour[ncities - 1]] = pii(new_tour[ncities - 2],
+                                                         new_tour[0]);
+    for (int i = 1; i < ncities - 1; ++i){
+        tabulist[tabu_solution][new_tour[i]] = pii(new_tour[i - 1],
+                                                   new_tour[i + 1]);
+    }
+}
+
+void print_tabu_list(std::vector< std::vector< pii > > &tabulist,
+                     int ncities){
+    std::cout << "PRINTING TABU LIST" << std::endl;
+    std::cout << "city -> (prevcity, nextcity)" << std::endl;
+    for (int i = 0; i < (int) tabulist.size(); i++){
+        std::cout << "Position: " << i << std::endl;
+        for (int j = 0; j < ncities; j++){
+            std::cout << j << "-> (" << tabulist[i][j].first << ',' << tabulist[i][j].second << ")  ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+bool tour_in_tabu_list(std::vector< std::vector< pii > > &tabulist,
+                       std::vector<int> &tour,
+                       int ncities){
+    bool present = false;
+    for(int i = 0; i < (int) tabulist.size(); i++){
+        // Check solution
+        present = false;
+        // Check first and last position, if equal to tour on tabulist,
+        // check middle of tour
+        // std::cout << "checkind first and last of tour  " << std::endl;
+        // std::cout << "first:  " << tabulist[i][tour[0]].first << ' ' <<  tabulist[i][tour[0]].second  << "    " << tour[ncities-1] << "  " <<tour[1] << std::endl;
+        // std::cout << "last:  " << tabulist[i][tour[ncities-1]].first << ' ' << tabulist[i][tour[ncities-1]].second << std::endl;
+        
+        if( ( tabulist[i][tour[0]] == pii(tour[ncities-1], tour[1]) ) && 
+            ( tabulist[i][tour[ncities-1]] == pii(tour[ncities-2], tour[0]) )){
+            std::cout << "found first and last of tour  " << std::endl;
+            present = true;
+            for (int j = 1; j < ncities - 1; j++){
+                if(tabulist[i][tour[j]] != pii(tour[j-1], tour[j+1])){
+                    present = false;
+                    break;
+                }
+            }
+            if(present) return present;
+        }
+    }
+    return false;
+}
+
 lld heuristics_Tabu_Search_TSP(vector< vector< double> > &distMatrix,
                                std::vector<int> &tour,
                                int ncities, bool att){
     lld curcost = 0.0;
     lld bestcost = 0.0;
-    int nneighborhoods = 2; // Number of neighborhoods for local search
     int noimprovement = 0;
+    int tabu_solution = 0; // Keep track of how many solutions are in the tabu list
     int MAX_ITERATIONS_WITH_NO_IMPROVEMENT = 10;
+    std::vector< std::vector< pii > > tabulist(10, std::vector< pii >(ncities, pii(0, 0)));
     // Generate initial solution using the constructive heuristic
     bestcost = heuristics_ConstructiveTSP(distMatrix, tour, ncities, att);
-    while(noimprovement < MAX_ITERATIONS_WITH_NO_IMPROVEMENT){
-        return 0.0;
+    // Add solution to tabu list
+    print_tour(tour);
+    std::cout << std::endl;
+    add_tour_to_tabu(tabulist, tour, ncities, tabu_solution);
+    tabu_solution++;
+    if(tour_in_tabu_list(tabulist, tour, ncities)){
+        std::cout << "TOUR IN TABU LIST" << std::endl;
     }
-    return 0.0;
+    // print_tabu_list(tabulist, ncities);
+
+    while(noimprovement < MAX_ITERATIONS_WITH_NO_IMPROVEMENT){
+        return bestcost;
+    }
+    return bestcost;
 }
