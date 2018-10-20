@@ -51,19 +51,17 @@ void makeDistMatrix(vector< pdd > &cities,
 }
 
 lld calculate_tour_cost(std::vector<int> &tour,
-                        vector< vector< double> > &distMatrix,
-                        bool att){
+                        vector< vector< double> > &distMatrix){
     lld totalcost = 0.0;
     for (int i = 0; i < ((int) tour.size()) - 1; i++){ // O(n)
         totalcost += distMatrix[tour[i]][tour[i+1]];
-        // totalcost += calculateDist(cities[tour[i]], cities[tour[i+1]], att);
     }
     return totalcost;
 }
 
 lld heuristics_ConstructiveTSP(vector< vector< double> > &distMatrix,
                                std::vector<int> &tour,
-                               int ncities, bool att){
+                               int ncities){
 	// Greedy heuristic for constructing a TSP path in a complete graph
     int cur = 0;
     double dist;
@@ -116,14 +114,14 @@ void print_tour(std::vector<int> tour){
 
 lld heuristics_VND_TSP(vector< vector< double> > &distMatrix,
                        std::vector<int> &tour,
-                       int ncities, bool att){
+                       int ncities){
     lld curcost = 0.0;
     lld bestcost = 0.0;
     int nneighborhoods = 2; // Number of neighborhoods for local search
     int noimprovement = 0;
 
     // Generate initial solution using the constructive heuristic
-    bestcost = heuristics_ConstructiveTSP(distMatrix, tour, ncities, att);
+    bestcost = heuristics_ConstructiveTSP(distMatrix, tour, ncities);
     // Tour will be stored in the tour variable
     int l = 0;
     while(l < nneighborhoods && noimprovement < 10){
@@ -131,7 +129,7 @@ lld heuristics_VND_TSP(vector< vector< double> > &distMatrix,
         //     - neighborhood 0: 2Opt
         //     - neighborhood 1: 3Opt
         if(l == 0){
-            curcost = search_2Opt_TSP(distMatrix, tour, bestcost, ncities, att);
+            curcost = search_2Opt_TSP(distMatrix, tour, bestcost, ncities);
             if(curcost < bestcost){
                 // If cost of new solution is better than cost of current solution
                 // Store new solution
@@ -145,7 +143,7 @@ lld heuristics_VND_TSP(vector< vector< double> > &distMatrix,
             }
         }
         if(l == 1){
-            curcost = search_3Opt_TSP(distMatrix, tour, bestcost, ncities, att);
+            curcost = search_3Opt_TSP(distMatrix, tour, bestcost, ncities);
             if(curcost < bestcost){
                 // If cost of new solution is better than cost of current solution
                 // Store new solution
@@ -163,7 +161,7 @@ lld heuristics_VND_TSP(vector< vector< double> > &distMatrix,
     return bestcost;
 }
 
-void reverse_path(std::vector<int> &tour, int i, int k, bool att){
+void reverse_path(std::vector<int> &tour, int i, int k){
     int swapaux = 0;
     int ncities = ((int) tour.size()) - 1;
     if(k < i) swap(i, k);
@@ -186,7 +184,7 @@ void reverse_path(std::vector<int> &tour, int i, int k, bool att){
 lld search_2Opt_TSP(vector< vector< double> > &distMatrix,
                     std::vector<int> &tour,
                     lld initialcost,
-                    int ncities, bool att){
+                    int ncities){
     lld bestcost = initialcost;
     lld curcost = 0.0;
     for (int i = 0; i < ncities - 1; i++){
@@ -194,8 +192,8 @@ lld search_2Opt_TSP(vector< vector< double> > &distMatrix,
             // Swap nodes i and k in tour
             std::vector<int> new_tour(tour.begin(), tour.end());
             // Calculate new tour distance
-            reverse_path(new_tour, i, k, att);
-            curcost = calculate_tour_cost(new_tour, distMatrix, att);
+            reverse_path(new_tour, i, k);
+            curcost = calculate_tour_cost(new_tour, distMatrix);
             // If new distance < best distance: replace
             if(curcost < bestcost){
                 bestcost = curcost;
@@ -211,7 +209,7 @@ lld search_2Opt_TSP(vector< vector< double> > &distMatrix,
 lld search_3Opt_TSP(vector< vector< double> > &distMatrix,
                     std::vector<int> &tour,
                     lld initialcost,
-                    int ncities, bool att){
+                    int ncities){
     lld bestcost = initialcost;
     lld curcost = 0.0;
     for (int i = 0; i < ncities - 2; i++){
@@ -226,8 +224,8 @@ lld search_3Opt_TSP(vector< vector< double> > &distMatrix,
                 // First try: Reverse A, which equals reverse BC
                 // Make new tour
                 std::vector<int> new_tour(tour.begin(), tour.end());
-                reverse_path(new_tour, i, k-1, att); // Revert BC
-                curcost = calculate_tour_cost(new_tour, distMatrix, att);
+                reverse_path(new_tour, i, k-1); // Revert BC
+                curcost = calculate_tour_cost(new_tour, distMatrix);
                 // If new distance < best distance: replace
                 if(curcost < bestcost){
                     bestcost = curcost;
@@ -236,8 +234,8 @@ lld search_3Opt_TSP(vector< vector< double> > &distMatrix,
                 }
                 // Second try: Reverse C
                 new_tour.assign(tour.begin(), tour.end());
-                reverse_path(new_tour, j, k-1, att); // Revert C
-                curcost = calculate_tour_cost(new_tour, distMatrix, att);
+                reverse_path(new_tour, j, k-1); // Revert C
+                curcost = calculate_tour_cost(new_tour, distMatrix);
                 // If new distance < best distance: replace
                 if(curcost < bestcost){
                     bestcost = curcost;
@@ -246,8 +244,8 @@ lld search_3Opt_TSP(vector< vector< double> > &distMatrix,
                 }
                 // Third try: Reverse B
                 new_tour.assign(tour.begin(), tour.end());
-                reverse_path(new_tour, i, j-1, att); // Revert B
-                curcost = calculate_tour_cost(new_tour, distMatrix, att);
+                reverse_path(new_tour, i, j-1); // Revert B
+                curcost = calculate_tour_cost(new_tour, distMatrix);
                 // If new distance < best distance: replace
                 if(curcost < bestcost){
                     bestcost = curcost;
@@ -257,9 +255,9 @@ lld search_3Opt_TSP(vector< vector< double> > &distMatrix,
                 // Fourth try: Reverse A, then revert B, which means
                 // revert BC then revert B
                 new_tour.assign(tour.begin(), tour.end());
-                reverse_path(new_tour, i, k-1, att); // Revert BC
-                reverse_path(new_tour, i, j-1, att); // Revert B
-                curcost = calculate_tour_cost(new_tour, distMatrix, att);
+                reverse_path(new_tour, i, k-1); // Revert BC
+                reverse_path(new_tour, i, j-1); // Revert B
+                curcost = calculate_tour_cost(new_tour, distMatrix);
                 // If new distance < best distance: replace
                 if(curcost < bestcost){
                     bestcost = curcost;
@@ -270,9 +268,9 @@ lld search_3Opt_TSP(vector< vector< double> > &distMatrix,
                 // Fifth try: Reverse A, then revert C, which means
                 // revert BC then revert C
                 new_tour.assign(tour.begin(), tour.end());
-                reverse_path(new_tour, i, k-1, att); // Revert BC
-                reverse_path(new_tour, j, k-1, att); // Revert C
-                curcost = calculate_tour_cost(new_tour, distMatrix, att);
+                reverse_path(new_tour, i, k-1); // Revert BC
+                reverse_path(new_tour, j, k-1); // Revert C
+                curcost = calculate_tour_cost(new_tour, distMatrix);
                 // If new distance < best distance: replace
                 if(curcost < bestcost){
                     bestcost = curcost;
@@ -282,9 +280,9 @@ lld search_3Opt_TSP(vector< vector< double> > &distMatrix,
 
                 // Sixth try: Reverse B, then revert C
                 new_tour.assign(tour.begin(), tour.end());
-                reverse_path(new_tour, i, j-1, att); // Revert B
-                reverse_path(new_tour, j, k-1, att); // Revert C
-                curcost = calculate_tour_cost(new_tour, distMatrix, att);
+                reverse_path(new_tour, i, j-1); // Revert B
+                reverse_path(new_tour, j, k-1); // Revert C
+                curcost = calculate_tour_cost(new_tour, distMatrix);
                 // If new distance < best distance: replace
                 if(curcost < bestcost){
                     bestcost = curcost;
@@ -295,10 +293,10 @@ lld search_3Opt_TSP(vector< vector< double> > &distMatrix,
                 // Seventh try: Reverse A, then B, then C
                 // which means: revert BC, then B, then C
                 new_tour.assign(tour.begin(), tour.end());
-                reverse_path(new_tour, i, k-1, att); // Revert BC
-                reverse_path(new_tour, i, j-1, att); // Revert B
-                reverse_path(new_tour, j, k-1, att); // Revert C
-                curcost = calculate_tour_cost(new_tour, distMatrix, att);
+                reverse_path(new_tour, i, k-1); // Revert BC
+                reverse_path(new_tour, i, j-1); // Revert B
+                reverse_path(new_tour, j, k-1); // Revert C
+                curcost = calculate_tour_cost(new_tour, distMatrix);
                 // If new distance < best distance: replace
                 if(curcost < bestcost){
                     bestcost = curcost;
@@ -311,9 +309,9 @@ lld search_3Opt_TSP(vector< vector< double> > &distMatrix,
     return bestcost;
 }
 
-void add_tour_to_tabu(std::vector< std::vector< pii > > &tabulist,
-                      std::vector<int> &new_tour,
-                      int ncities, int tabu_solution){
+void add_tour_to_tabu(std::vector<int> &new_tour,
+                      std::vector< std::vector< pii > > &tabulist,
+                      int ncities, int &tabu_solution){
     // Add first city
     tabulist[tabu_solution][new_tour[0]] = pii(new_tour[ncities - 1],
                                                new_tour[1]);
@@ -324,6 +322,8 @@ void add_tour_to_tabu(std::vector< std::vector< pii > > &tabulist,
         tabulist[tabu_solution][new_tour[i]] = pii(new_tour[i - 1],
                                                    new_tour[i + 1]);
     }
+    tabu_solution += 1;
+    tabu_solution %= 10;
 }
 
 void print_tabu_list(std::vector< std::vector< pii > > &tabulist,
@@ -339,8 +339,8 @@ void print_tabu_list(std::vector< std::vector< pii > > &tabulist,
     }
 }
 
-bool tour_in_tabu_list(std::vector< std::vector< pii > > &tabulist,
-                       std::vector<int> &tour,
+bool tour_in_tabu_list(std::vector<int> &tour,
+                       std::vector< std::vector< pii > > &tabulist,
                        int ncities){
     bool present = false;
     for(int i = 0; i < (int) tabulist.size(); i++){
@@ -354,7 +354,7 @@ bool tour_in_tabu_list(std::vector< std::vector< pii > > &tabulist,
         
         if( ( tabulist[i][tour[0]] == pii(tour[ncities-1], tour[1]) ) && 
             ( tabulist[i][tour[ncities-1]] == pii(tour[ncities-2], tour[0]) )){
-            std::cout << "found first and last of tour  " << std::endl;
+            // std::cout << "found first and last of tour  " << std::endl;
             present = true;
             for (int j = 1; j < ncities - 1; j++){
                 if(tabulist[i][tour[j]] != pii(tour[j-1], tour[j+1])){
@@ -370,7 +370,7 @@ bool tour_in_tabu_list(std::vector< std::vector< pii > > &tabulist,
 
 lld heuristics_Tabu_Search_TSP(vector< vector< double> > &distMatrix,
                                std::vector<int> &tour,
-                               int ncities, bool att){
+                               int ncities){
     lld curcost = 0.0;
     lld bestcost = 0.0;
     int noimprovement = 0;
@@ -378,19 +378,21 @@ lld heuristics_Tabu_Search_TSP(vector< vector< double> > &distMatrix,
     int MAX_ITERATIONS_WITH_NO_IMPROVEMENT = 10;
     std::vector< std::vector< pii > > tabulist(10, std::vector< pii >(ncities, pii(0, 0)));
     // Generate initial solution using the constructive heuristic
-    bestcost = heuristics_ConstructiveTSP(distMatrix, tour, ncities, att);
+    bestcost = heuristics_ConstructiveTSP(distMatrix, tour, ncities);
     // Add solution to tabu list
-    print_tour(tour);
-    std::cout << std::endl;
-    add_tour_to_tabu(tabulist, tour, ncities, tabu_solution);
-    tabu_solution++;
-    if(tour_in_tabu_list(tabulist, tour, ncities)){
-        std::cout << "TOUR IN TABU LIST" << std::endl;
-    }
-    // print_tabu_list(tabulist, ncities);
-
+    add_tour_to_tabu(tour, tabulist, ncities, tabu_solution);
+    
     while(noimprovement < MAX_ITERATIONS_WITH_NO_IMPROVEMENT){
-        return bestcost;
+        std::vector<int> new_tour(tour.begin(), tour.end());
+        // Search 2-Opt neghborhood for solution with fitness higher
+        // than the current solution
+        curcost = search_2Opt_TSP(distMatrix, new_tour, bestcost, ncities);
+        if(!tour_in_tabu_list(new_tour, tabulist, ncities) && (curcost < bestcost) ){
+            add_tour_to_tabu(tour, tabulist, ncities, tabu_solution);
+            tour = new_tour;
+            bestcost = curcost;
+            noimprovement = 0;
+        }else noimprovement++;
     }
     return bestcost;
 }

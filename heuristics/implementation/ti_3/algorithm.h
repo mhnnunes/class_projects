@@ -36,38 +36,36 @@ void makeDistMatrix(std::vector< pdd > &cities,
                     int ncities, bool att);
 
 lld calculate_tour_cost(std::vector<int> &tour,
-                        std::vector< std::vector< double> > &distMatrix,
-                        bool att);
+                        std::vector< std::vector< double> > &distMatrix);
 
 lld heuristics_ConstructiveTSP(std::vector< std::vector< double> > &distMatrix,
 						       std::vector<int> &tour,
-						       int ncities, bool att);
+						       int ncities);
 
 lld heuristics_VND_TSP(std::vector< std::vector< double> > &distMatrix,
 					   std::vector<int> &tour,
-					   int ncities, bool att);
+					   int ncities);
 
 lld heuristics_Tabu_Search_TSP(std::vector< std::vector< double> > &distMatrix,
                                std::vector<int> &tour,
-                               int ncities, bool att);
+                               int ncities);
 
 void reverse_path(std::vector<int> &tour,
-                  int i, int k,
-                  bool att);
+                  int i, int k);
 
 lld search_2Opt_TSP(std::vector< std::vector< double> > &distMatrix,
                     std::vector<int> &tour,
                     lld initialcost,
-                    int ncities, bool att);
+                    int ncities);
 
 lld search_3Opt_TSP(std::vector< std::vector< double> > &distMatrix,
                     std::vector<int> &tour,
                     lld initialcost,
-                    int ncities, bool att);
+                    int ncities);
 
-void add_tour_to_tabu(std::vector< std::vector< pii > > &tabulist,
-                      std::vector<int> &new_tour,
-                      int ncities, int tabu_solution);
+void add_tour_to_tabu(std::vector<int> &new_tour,
+                      std::vector< std::vector< pii > > &tabulist,
+                      int ncities, int &tabu_solution);
 
 void print_tabu_list(std::vector< std::vector< pii > > &tabulist,
                      int ncities);
