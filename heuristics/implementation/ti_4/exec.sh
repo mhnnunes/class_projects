@@ -29,7 +29,7 @@ do
   # Execute and save results from program
   BNAME=`basename $f`
   TIME_START=`date +%s.%N`
-  OUTPUT=`$CURDIR/tp3 < $f`
+  OUTPUT=`$CURDIR/tp4 < $f`
   TIME_END=`date +%s.%N`
   TIME_DIFF=`echo ${TIME_END} - ${TIME_START}| bc`
   echo "${OUTPUT} ${BNAME} ${TIME_DIFF}" >> $RESULT_FILE

@@ -17,8 +17,8 @@
 #define ALGORITHM_H
 
 #include <cmath>
+#include <ctime>
 #include <vector>
-#include <time.h>
 #include <cstdlib>
 #include <utility>
 

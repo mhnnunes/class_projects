@@ -33,7 +33,7 @@ int main(int argc, char* argv[]){
                                         std::vector<double> (ncities, 0));
 
     makeDistMatrix(cities, distMatrix, ncities, att);
-    lld cost = heuristics_Tabu_Search_TSP(distMatrix, tour, ncities);
+    lld cost = heuristics_GRASP_TSP(distMatrix, tour, ncities);
     cout << cost << endl;
     // print_tour(tour, cities);
 }

@@ -198,7 +198,7 @@ lld search_2Opt_TSP(vector< vector< double> > &distMatrix,
             if(curcost < bestcost){
                 bestcost = curcost;
                 tour = new_tour;
-                return bestcost; // First improving
+                // return bestcost; // First improving
             }
         }
     }
@@ -414,11 +414,10 @@ lld heuristics_Greedy_Randomized_TSP(std::vector< std::vector< double> > &distMa
     visited[cur] = 1; // Mark current city as visited
     tour[0] = cur; // Add the first city to tour
     nvisited++;
-    srand( time(NULL) ) // Initialize random seed
+    srand( time(NULL) ); // Initialize random seed
 
 
     while(nvisited < ncities){ // Iterate through all cities: O(n)
-        nearest_neighbor.first = INF;
 
         // Build RCL
         rcl.resize(0);
@@ -426,14 +425,16 @@ lld heuristics_Greedy_Randomized_TSP(std::vector< std::vector< double> > &distMa
         mincost = (double) INF;
         maxcost = 0.0;
         for (int i = 0; i < ncities; ++i){ // Iterate through all cities: O(n)
-            if(distMatrix[cur][i] < mincost) mincost = distMatrix[cur][i];
-            if(distMatrix[cur][i] > maxcost) maxcost = distMatrix[cur][i];
+            if(!visited[i] && distMatrix[cur][i] < mincost)
+                mincost = distMatrix[cur][i];
+            if(!visited[i] && distMatrix[cur][i] > maxcost)
+                maxcost = distMatrix[cur][i];
         }
-        threshold = mincost + alpha*(mincost + maxcost)
-        for (int i = 0; i < ncities; ++i){ // Iterate through all cities: O(n)
+        threshold = mincost + alpha*(maxcost - mincost);
+        for (int i = 0; i < ncities; i++){ // Iterate through all cities: O(n)
             // Only calculate distance to unvisited cities
             if(!visited[i] && i != cur){
-                if(distMatrix[cur][i] < threshold) rcl.push_back(i);
+                if(distMatrix[cur][i] <= threshold) rcl.push_back(i);
             }
         }
         randi = rand() % ((int) rcl.size());
@@ -456,29 +457,34 @@ lld heuristics_Greedy_Randomized_TSP(std::vector< std::vector< double> > &distMa
 lld heuristics_GRASP_TSP(vector< vector< double> > &distMatrix,
                          std::vector<int> &tour,
                          int ncities){
-    lld curcost = 0.0;
+    lld curcost_greedy = 0.0;
+    lld curcost_local = 0.0;
     lld bestcost = 0.0;
-    double alpha = 0.4;
+    double alpha = 0.2;
     int noimprovement = 0;
-    int tabu_solution = 0; // Keep track of how many solutions are in the tabu list
-    int MAX_ITERATIONS_WITH_NO_IMPROVEMENT = 10;
-    std::vector< std::vector< pii > > tabulist(10, std::vector< pii >(ncities, pii(0, 0)));
+    int MAX_ITERATIONS_WITH_NO_IMPROVEMENT = 500;
     // Generate initial solution using the constructive heuristic
-    bestcost = heuristics_ConstructiveTSP(distMatrix, tour, ncities);
+    bestcost = heuristics_Greedy_Randomized_TSP(distMatrix, tour, alpha,
+                                                ncities);
     // Add solution to tabu list
-    add_tour_to_tabu(tour, tabulist, ncities, tabu_solution);
+    // add_tour_to_tabu(tour, tabulist, ncities, tabu_solution);
     
     while(noimprovement < MAX_ITERATIONS_WITH_NO_IMPROVEMENT){
+    // for (int i = 0; i < MAX_ITERATIONS_WITH_NO_IMPROVEMENT; ++i){
         std::vector<int> new_tour(tour.begin(), tour.end());
+        curcost_greedy = heuristics_Greedy_Randomized_TSP(distMatrix,
+                                                          new_tour,
+                                                          alpha,
+                                                          ncities);
         // Search 2-Opt neghborhood for solution with fitness higher
         // than the current solution
-        curcost = search_2Opt_TSP(distMatrix, new_tour, bestcost, ncities);
-        if(!tour_in_tabu_list(new_tour, tabulist, ncities) && (curcost < bestcost) ){
-            add_tour_to_tabu(tour, tabulist, ncities, tabu_solution);
+        curcost_local = heuristics_VND_TSP(distMatrix, new_tour, ncities);
+        if(curcost_local < bestcost){
             tour = new_tour;
-            bestcost = curcost;
+            bestcost = curcost_local;
             noimprovement = 0;
-        }else noimprovement++;
+        }
+        else noimprovement++;
     }
     return bestcost;
 }
