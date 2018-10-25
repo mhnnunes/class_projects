@@ -18,6 +18,8 @@
 
 #include <cmath>
 #include <vector>
+#include <time.h>
+#include <cstdlib>
 #include <utility>
 
 typedef long double lld;
@@ -39,16 +41,25 @@ lld calculate_tour_cost(std::vector<int> &tour,
                         std::vector< std::vector< double> > &distMatrix);
 
 lld heuristics_ConstructiveTSP(std::vector< std::vector< double> > &distMatrix,
-						       std::vector<int> &tour,
-						       int ncities);
+						                   std::vector<int> &tour,
+						                   int ncities);
 
 lld heuristics_VND_TSP(std::vector< std::vector< double> > &distMatrix,
-					   std::vector<int> &tour,
-					   int ncities);
+					             std::vector<int> &tour,
+					             int ncities);
 
 lld heuristics_Tabu_Search_TSP(std::vector< std::vector< double> > &distMatrix,
                                std::vector<int> &tour,
                                int ncities);
+
+lld heuristics_Greedy_Randomized_TSP(std::vector< std::vector< double> > &distMatrix,
+                                     std::vector<int> &tour,
+                                     double alpha,
+                                     int ncities);
+
+lld heuristics_GRASP_TSP(std::vector< std::vector< double> > &distMatrix,
+                         std::vector<int> &tour,
+                         int ncities);
 
 void reverse_path(std::vector<int> &tour,
                   int i, int k);

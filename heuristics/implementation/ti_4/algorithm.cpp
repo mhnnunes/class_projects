@@ -22,13 +22,13 @@
 using namespace std;
 
 double euc_2d(pdd city1, pdd city2){
-	// Euclidean distance
+    // Euclidean distance
     return round(sqrt(pow((city1.x - city2.x), 2) +
                       pow((city1.y - city2.y), 2)));
 }
 
 double att_dist(pdd city1, pdd city2){
-	// ATT distance, as specified in the TSP input pdf
+    // ATT distance, as specified in the TSP input pdf
     return ceil(sqrt((pow((city1.x - city2.x), 2) +
                 pow((city1.y - city2.y), 2)) / 10.0));
 }
@@ -62,7 +62,7 @@ lld calculate_tour_cost(std::vector<int> &tour,
 lld heuristics_ConstructiveTSP(vector< vector< double> > &distMatrix,
                                std::vector<int> &tour,
                                int ncities){
-	// Greedy heuristic for constructing a TSP path in a complete graph
+    // Greedy heuristic for constructing a TSP path in a complete graph
     int cur = 0;
     double dist;
     int nvisited = 0;
@@ -373,6 +373,92 @@ lld heuristics_Tabu_Search_TSP(vector< vector< double> > &distMatrix,
                                int ncities){
     lld curcost = 0.0;
     lld bestcost = 0.0;
+    int noimprovement = 0;
+    int tabu_solution = 0; // Keep track of how many solutions are in the tabu list
+    int MAX_ITERATIONS_WITH_NO_IMPROVEMENT = 10;
+    std::vector< std::vector< pii > > tabulist(10, std::vector< pii >(ncities, pii(0, 0)));
+    // Generate initial solution using the constructive heuristic
+    bestcost = heuristics_ConstructiveTSP(distMatrix, tour, ncities);
+    // Add solution to tabu list
+    add_tour_to_tabu(tour, tabulist, ncities, tabu_solution);
+    
+    while(noimprovement < MAX_ITERATIONS_WITH_NO_IMPROVEMENT){
+        std::vector<int> new_tour(tour.begin(), tour.end());
+        // Search 2-Opt neghborhood for solution with fitness higher
+        // than the current solution
+        curcost = search_2Opt_TSP(distMatrix, new_tour, bestcost, ncities);
+        if(!tour_in_tabu_list(new_tour, tabulist, ncities) && (curcost < bestcost) ){
+            add_tour_to_tabu(tour, tabulist, ncities, tabu_solution);
+            tour = new_tour;
+            bestcost = curcost;
+            noimprovement = 0;
+        }else noimprovement++;
+    }
+    return bestcost;
+}
+
+
+lld heuristics_Greedy_Randomized_TSP(std::vector< std::vector< double> > &distMatrix,
+                                     std::vector<int> &tour,
+                                     double alpha,
+                                     int ncities){
+    // Greedy randomized heuristic for constructing a TSP path in a complete graph
+    int randi;
+    int cur = 0;
+    int nvisited = 0;
+    lld totalcost = 0.0;
+    double maxcost, mincost, threshold;
+    std::vector<int> rcl;
+    std::vector<bool> visited(ncities, false);
+
+    visited[cur] = 1; // Mark current city as visited
+    tour[0] = cur; // Add the first city to tour
+    nvisited++;
+    srand( time(NULL) ) // Initialize random seed
+
+
+    while(nvisited < ncities){ // Iterate through all cities: O(n)
+        nearest_neighbor.first = INF;
+
+        // Build RCL
+        rcl.resize(0);
+        // Set maxcost and mincost
+        mincost = (double) INF;
+        maxcost = 0.0;
+        for (int i = 0; i < ncities; ++i){ // Iterate through all cities: O(n)
+            if(distMatrix[cur][i] < mincost) mincost = distMatrix[cur][i];
+            if(distMatrix[cur][i] > maxcost) maxcost = distMatrix[cur][i];
+        }
+        threshold = mincost + alpha*(mincost + maxcost)
+        for (int i = 0; i < ncities; ++i){ // Iterate through all cities: O(n)
+            // Only calculate distance to unvisited cities
+            if(!visited[i] && i != cur){
+                if(distMatrix[cur][i] < threshold) rcl.push_back(i);
+            }
+        }
+        randi = rand() % ((int) rcl.size());
+        // Add closest city to tour
+        tour[nvisited] = rcl[randi];
+        // Add its cost to the total
+        totalcost += distMatrix[cur][rcl[randi]];
+        cur = rcl[randi];
+        visited[cur] = 1; // Mark current city as visited
+        nvisited++;
+    }
+    // Add edge from last city to first
+    int i = 0;
+    tour[nvisited] = i;
+    totalcost += distMatrix[cur][i];
+    return totalcost;
+}
+
+
+lld heuristics_GRASP_TSP(vector< vector< double> > &distMatrix,
+                         std::vector<int> &tour,
+                         int ncities){
+    lld curcost = 0.0;
+    lld bestcost = 0.0;
+    double alpha = 0.4;
     int noimprovement = 0;
     int tabu_solution = 0; // Keep track of how many solutions are in the tabu list
     int MAX_ITERATIONS_WITH_NO_IMPROVEMENT = 10;
