@@ -4,7 +4,3 @@ This repository holds the code used in the Heuristics and Metaheuristics class. 
 
 * [implementation](implementation)
     * This directory contains code used in the implementation assignments
-* [research](research)
-    * This directory holds code used in the research project
-    
-

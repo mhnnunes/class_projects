@@ -458,11 +458,10 @@ lld heuristics_GRASP_TSP(vector< vector< double> > &distMatrix,
     lld curcost_greedy = 0.0;
     lld curcost_local = 0.0;
     lld bestcost = 0.0;
-    lld bestalpha = INF;
     
     int noimprovement = 0;
     int MAX_ITERATIONS_WITH_NO_IMPROVEMENT = 500;
-    double alpha = 0.2;
+    double alpha = 0.001;
     // Generate initial solution using the constructive heuristic
     bestcost = heuristics_Greedy_Randomized_TSP(distMatrix, tour, alpha,
                                                  ncities);
