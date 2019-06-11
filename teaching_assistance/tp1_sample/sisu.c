@@ -33,7 +33,8 @@ void move_primeiro_para_espera(Curso *cursos, float *notacorte, int cursoatual)
     }
 }
 
-void allocate_students(Curso *cursos, Aluno *alunos, int nalunos){
+void allocate_students(Curso *cursos, Aluno *alunos, int nalunos)
+{
     int i = 0;
     NoAlunoPointer p;
     float notacorte = 0.0;
