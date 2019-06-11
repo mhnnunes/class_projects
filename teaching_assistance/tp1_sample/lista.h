@@ -25,15 +25,15 @@
 typedef struct NoAluno *NoAlunoPointer;
 typedef struct NoAluno
 {
-	Aluno* aluno;
-	NoAlunoPointer next; // Ponteiro para o próximo elemento
-	NoAlunoPointer prev; // Ponteiro para o elemento anterior
+    Aluno* aluno;
+    NoAlunoPointer next; // Ponteiro para o próximo elemento
+    NoAlunoPointer prev; // Ponteiro para o elemento anterior
 }NoAluno;
 
 typedef struct ListaAluno
 {
-	NoAluno *first; // Ponteiro para o primeiro elemento
-	NoAluno *last; // Ponteiro para o último elemento
+    NoAluno *first; // Ponteiro para o primeiro elemento
+    NoAluno *last; // Ponteiro para o último elemento
 }ListaAluno;
 
 // Confere se a lista está vazia
@@ -44,10 +44,10 @@ void cria_vazia(ListaAluno *Lista);
 NoAlunoPointer remove_primeiro(ListaAluno *Lista);
 // Cria uma célula e insere-a na lista de maneira ordenada
 float cria_e_insere_ordenado(ListaAluno *Lista, Aluno *a,
-	int cursoatual);
+    int cursoatual);
 // Insere uma célula na lista de maneira ordenada
 void insere_ordenado(ListaAluno *Lista, NoAlunoPointer nap, float *notacorte,
-	int cursoatual);
+    int cursoatual);
 // Encontra a posição ideal para o aluno na lista
 NoAlunoPointer encontra_posicao(ListaAluno *Lista, Aluno *a, int cursoatual);
 

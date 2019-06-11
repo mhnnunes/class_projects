@@ -20,12 +20,12 @@
 
 typedef struct Curso
 {
-	char nome[100];
-	float notacorte;
-	int vagas;
-	int aprovados;
-	ListaAluno classificados;
-	ListaAluno espera;
+    char nome[100];
+    float notacorte;
+    int vagas;
+    int aprovados;
+    ListaAluno classificados;
+    ListaAluno espera;
 }Curso;
 
 void imprime_classificacoes(Curso *cursos, int i);

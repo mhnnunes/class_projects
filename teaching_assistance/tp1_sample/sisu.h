@@ -19,7 +19,7 @@
 // Move o primeiro aluno do curso para a lista de espera
 // (quando o aluno é desqualificado pela entrada de outro)
 void move_primeiro_para_espera(Curso *cursos, float *notacorte,
-	int cursoatual);
+    int cursoatual);
 // Aloca todos os alunos no curso (função principal do programa)
 void allocate_students(Curso *cursos, Aluno *alunos, int nalunos);
 

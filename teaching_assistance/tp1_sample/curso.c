@@ -18,18 +18,18 @@
 
 void imprime_classificacoes(Curso *cursos, int i)
 {
-	printf("%s %.2f\n", cursos[i].nome, cursos[i].notacorte);
-	printf("Classificados\n");
-	NoAlunoPointer p;
-	p = cursos[i].classificados.last;
-	while(p != cursos[i].classificados.first || p->aluno != NULL){
-		printf("%s %.2f\n", p->aluno->nome, p->aluno->nota);
-		p = p->prev;
-	}
-	printf("Lista de espera\n");
-	p = cursos[i].espera.last;
-	while(p != cursos[i].espera.first || p->aluno != NULL){
-		printf("%s %.2f\n", p->aluno->nome, p->aluno->nota);
-		p = p->prev;
-	}
+    printf("%s %.2f\n", cursos[i].nome, cursos[i].notacorte);
+    printf("Classificados\n");
+    NoAlunoPointer p;
+    p = cursos[i].classificados.last;
+    while(p != cursos[i].classificados.first || p->aluno != NULL){
+        printf("%s %.2f\n", p->aluno->nome, p->aluno->nota);
+        p = p->prev;
+    }
+    printf("Lista de espera\n");
+    p = cursos[i].espera.last;
+    while(p != cursos[i].espera.first || p->aluno != NULL){
+        printf("%s %.2f\n", p->aluno->nome, p->aluno->nota);
+        p = p->prev;
+    }
 }

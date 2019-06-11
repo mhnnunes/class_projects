@@ -19,10 +19,10 @@
 
 typedef struct Aluno
 {
-	char nome[100];
-	float nota;
-	int curso1;
-	int curso2;
+    char nome[100];
+    float nota;
+    int curso1;
+    int curso2;
 }Aluno;
 
 #endif
