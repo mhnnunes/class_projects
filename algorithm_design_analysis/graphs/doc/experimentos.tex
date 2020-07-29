@@ -1,0 +1,28 @@
+\section{Análise Experimental} \label{sec:experimentos}
+
+O objetivo desta seção é apresentar dados que demonstram o desempenho  do código entregue como resultado do trabalho prático.  Os experimentos foram realizados em uma máquina com processador Intel\textsuperscript{\textregistered} Core\textsuperscript{\texttrademark} i5-6200U, de 8 núcleos a $2.30GHz$. A máquina opera a $64$ bits, e possui $8$GB de memória RAM DIMM DDR4. O sistema operacional utilizado foi o Linux Mint Sonya $18.2$. O trabalho foi implementado na linguagem \texttt{C++11}. 
+
+As instâncias de teste foram geradas utilizando um gerador de grafos aleatórios disponível online\footnote{\url{https://github.com/cgpimenta/util}}, utilizando 10 \textit{seeds} diferentes\footnote{$\{ 1, 6, 16, 18, 33, 57, 68, 75, 80, 99 \}$} para o gerador de numeros pseudo-aleatórios. Cinco grafos de cada tipo e uma versão completa com todos os tipos de grafo foram geradas, de cinco tamanhos diferentes de nós\footnote{$\{ 10, 20, 100, 1000, 10000, 100000 \}$} e arestas\footnote{$\{ 100, 1000, 10000, 100000, 1000000 \}$}. Utilizando todas as combinações destes parâmetros, o número total de instâncias geradas foi $320$.
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\linewidth]{../timeplot}
+\caption{Gráfico de tempo de execução por número de nós}
+\label{fig:timeplot}
+\end{figure}
+
+
+A figura \ref{fig:timeplot} apresenta os resultados do tempo de execução para as instâncias de teste. O eixo $x$ representa o número de nós da instância e o eixo $y$ representa o tempo de execução do programa. O tamanho do ponto representa o número de arestas da instância. Uma regressão LOESS (\textit{Locally Estimated Scatterplot Smoothing})\footnote{\url{https://blogs.sas.com/content/iml/2016/10/17/what-is-loess-regression.html}} foi ajustada aos pontos, a fim de revelar alguma tendência presente na relação. Pode-se observar que há um crescimento acelerado do tempo de processamento quando o numero de nós está entre 25 e 50 mil, porém este crescimento é causado pelo aumento no número de arestas (pode-se observar pelo tamanho do ponto que o número de arestas está próximo de 10 milhões). O comportamento da curva é aproximadamente quadrático em alguns pontos, mas sub-quadrático em outros, como esperado após a análise de complexidade teórica.
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{../memoryplot}
+\caption{Gráfico da memória utilizada por número de nós e arestas}
+\label{fig:memoryplot}
+\end{figure}
+
+O gráfico da figura \ref{fig:memoryplot} apresenta os resultados para a memória utilizada pelo programa durante a execução. Pode-se observar que a curva gerada pela regressão é bem parecida com a da figura \ref{fig:timeplot}, assim como esperado após a análise teórica realizada na seção \ref{sec:metodologia}. O resultado  observado na prática é bem similar ao resultado teórico: para grafos densos ($\textbar E \textbar \approx \textbar V \textbar^2$, ou seja, muito mais arestas do que vértices) o comportamento do algoritmo será aproximadamente quadrático no número de nós.
+
+Conclui-se que o objetivo do trabalho prático foi cumprido: implementar e analisar algoritmos em grafos. A resolução do problema passou por algoritmos exatos e algoritmos aproximativos, e a análise de complexidade teórica foi comprovada empiricamente.

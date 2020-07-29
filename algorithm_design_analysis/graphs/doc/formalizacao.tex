@@ -1,0 +1,88 @@
+\section{Formalização} \label{sec:formalizacao}
+
+O problema do trabalho prático pode ser dividido em duas etapas, mas o \textit{framework} utilizado nas duas é o mesmo. O conjunto de pontos fornecidos como entrada pode ser interpretado como um conjunto de vértices $V$ de um grafo não orientado e não ponderado $G=(V, E)$, e a sequência de conexões entre estes pontos (pares de pontos $(u_i, v_i)$) pode ser interpretada como as arestas $E$ entre os vértices de $V$. 
+
+Tratando o problema desta maneira, pode-se reduzir o problema de reconhecer as naves a dois problemas conhecidos em Teoria de Grafos: \textbf{identificar componentes conexas} em um grafo, e \textbf{classificar cada uma das componentes} em quatro tipos de grafos:
+
+\begin{itemize}
+	\item \textbf{Grafo bipartido completo} (onde os nós podem ser divididos em duas partições e nós de uma mesma partição não possuem arestas entre si mas são ligados a todos os nós da outra partição)\footnote{\url{http://mathworld.wolfram.com/CompleteBipartiteGraph.html}}, correspondendo à identificação das naves bombardeiras, como as da figura \ref{fig:nave_bomb}
+	\item \textbf{Grafo caminho} (onde os nós estão dispostos linearmente)\footnote{\url{http://mathworld.wolfram.com/PathGraph.html}}, correspondendo à identificação de naves de reconhecimento, como as da figura \ref{fig:nave_rec}
+	\item \textbf{Grafo cíclico} (onde os nós estão dispostos linearmente, com os nós das extremidades ligados entre si)\footnote{\url{http://mathworld.wolfram.com/CyclicGraph.html}}, correspondendo à identificação das naves de tranporte, como as da figura \ref{fig:nave_transp}
+	\item \textbf{Árvore} (grafo simples, não direcionado, conexo e acíclico)\footnote{\url{http://mathworld.wolfram.com/Tree.html}}, correspondendo à identificação de naves frigata, como as da figura \ref{fig:nave_frig}
+\end{itemize}
+
+Pode-se observar que uma árvore pode se degenerar em um grafo caminho, se cada nó possuir apenas um filho. Porém foi garantido nas restrições do trabalho que ``Uma frigata \textbf{nunca} poderá ter a mesma estrutura interna que uma nave de reconhecimento'', logo sabe-se que não há ambiguidade no reconhecimento das naves. 
+
+
+\begin{algorithm}[tb]
+	\SetKwInOut{Input}{Input}
+	\SetKwInOut{Output}{Output}
+	\SetKwProg{DFS}{DFS}{}{}
+	\DFS{$(G)$}{
+		\Input{Grafo $G = (V, E)$}
+		\Output{conjunto de componentes conexas $S$}
+		$S \gets \emptyset$ \;
+		$\forall v_i \in V$, marca $v_i$ como não visitado  \;
+		
+		\ForEach{$ v_i \in V $} {
+			$DFSVisit(G, v_i)$ \;
+			$S \gets S ~\cup \{ v_i \in V \} $, tal que $v_i$ é descendente de $v$\;
+			% colocar $i$ no cluster cujo centro é mais próximo dele \;
+		}
+	}
+	\caption{Pseudocódigo da Busca em Profundidade (DFS)}
+	\label{alg:dfs}
+\end{algorithm}
+% \setlength{\textfloatsep}{0.5pt}% Remove \textfloatsep
+O reconhecimento de componentes conexas em um grafo não direcionado e não ponderado é uma aplicação direta do algoritmo de \textbf{busca em profundidade}, visto em sala de aula. A cada chamada da função $DFSVisit(G, v)$ na busca em profundidade, descrita pelo algoritmo \ref{alg:dfs}, marca-se o vértice $v$ como visitado e percorre-se a lista de vértices adjacentes a $v$, chamando a $DFSVisit$ recursivamente para os vizinhos ainda não visitados. Ao final temos um conjunto $S$ onde cada $s_i = (V_{s_i}, E_{s_i}) \in S$ corresponde a um conjunto de vértices $V_{s_i} = \{v_1, v_2, ..., v_n\}$ e um conjunto de arestas $E_{s_i} = (v_i, v_j), \forall (v_i, v_j) \in V_{s_i}$ que formam uma componente conexa em G. A prova de corretude deste algoritmo pode ser encontrada \href{http://web.stanford.edu/class/archive/cs/cs161/cs161.1176/Lectures/CS161Lecture10.pdf}{{\color{blue} neste link} }.
+
+O próximo passo é a \textbf{identificação do tipo de cada nave} (componente conexa). Desenvolveu-se um algoritmo baseado nos quatro tipos de grafo disponíveis, para classificar os vértices de cada componente em um dos quatro tipos (árvore, caminho, ciclo, bipartido completo). O algoritmo \ref{alg:check_CC} ilustra o pseudo-código utilizado nesta etapa. Utiliza-se conceitos relacionados a cada um dos tipos de grafos descritos anteriormente, que representam os tipos de nave. Sabe-se que um grafo cujos vértices possuem grau menor ou igual a dois, só pode ser um ciclo ou um caminho. Caso o número de arestas deste grafo seja igual ao numero de vértices, sabe-se que o grafo é um ciclo. Caso contrário, é um grafo caminho. Caso o grau máximo dos vértices seja maior do que dois, verifica-se se o número de arestas no grafo é igual ao número de vértices menos 1. Neste caso, tem-se uma árvore. Caso contrário, pela especificação, este grafo só pode ser bipartido completo.
+
+
+\begin{algorithm}[tb]
+	\SetKwInOut{Input}{Input}
+	\SetKwInOut{Output}{Output}
+	\SetKwProg{checkCC}{checkCC}{}{}
+	\checkCC{$(S)$}{
+		\Input{$S$ conjunto de componentes conexas}
+		\Output{$T = \{t_i \forall s_i \in S \}$, onde $t_i$ é o tipo de cada componente $s_i$}
+		$T \gets \emptyset$\;
+		\ForEach{$ s_i \in S $} {
+			\If{$max( d(v_i)) \leq 2,  \forall v_i \in s_i )$}{
+				\If{$\textbar E_{s_i} \textbar == \textbar V_{s_i} \textbar$}{
+					$t_i \gets ciclo$\;
+				}
+				\Else{
+					$t_i \gets caminho$\;
+				}
+			}
+			\Else{
+				\If{$\textbar E_{s_i} \textbar == \textbar V_{s_i} \textbar - 1$}{
+					$t_i \gets arvore$\;
+				}
+				\Else{
+					$t_i \gets bipartido$\;
+				}
+			}
+			$T \gets T \cup \{ t_i \}$\;
+		}
+	}
+	\caption{Pseudocódigo da identificação de naves}
+	\label{alg:check_CC}
+\end{algorithm}
+% \setlength{\textfloatsep}{0.5pt}% Remove \textfloatsep
+
+Após a identificação e contagem das naves, o próximo passo é o calculo do \textbf{tempo de vantagem}. A resposta trivial para o menor tempo possível em que seja possível trocar os tripulantes de lugar é zero. Porém a especificação do trabalho pede uma resposta não trivial. O problema de trocar a posição dos tripulantes no menor tempo possível pode ser reduzido de maneira direta ao problema de ``Token Swapping on Graphs'' \cite{yamanaka2015swapping}. A definição do problema é a seguinte: dado um grafo $G = (V, E)$ com $n$ vértices, e uma sequência de $n$ \textit{tokens} $1, 2, ..., n$ distriuídos em vértices distintos de G, deseja-se transformar, com a menor sequência possível de operações, a distribuição inicial de tokens $f_0$ em uma distribuição final pré-definida $f$.
+
+\citeauthor{yamanaka2015swapping}~ mostram em seu paper \cite{yamanaka2015swapping} que a complexidade computacional de ``Token Swapping'' não é conhecida para grafos gerais. Porém, para alguns tipos especiais de grafos, os autores apresentam um algoritmo 2-aproximativo para a resolução do problema. Os tipos de grafo para os quais o algoritmo funciona são os grafos vistos no trabalho prático: caminho, ciclo, árvore e bipartido completo. O algoritmo proposto pelos autores é bastante simples, e baseado no lema \ref{lem:lemma_1}.
+
+\begin{lemma}
+	$OPT(f_0) \geq \frac{1}{2} \Delta(f_0)$
+	\label{lem:lemma_1}
+\end{lemma}
+
+Onde $\Delta(f_0) = \sum_{\forall (u, v) \in swaps} \delta(u, v)$, $\delta(u, v)$ representa o menor caminho entre os vértices $u$ e $v$, e $swaps$ é o conjunto de pares de vértices $(u_i, v_i)$ que trocam de posição.
+
+Pelo lema \ref{lem:lemma_1} sabemos que $\frac{1}{2}\Delta(f_0)$ é um limitante inferior para o valor ótimo, logo este valor foi utilizado para o algoritmo desenvolvido no trabalho. Calcula-se $\frac{1}{2}\Delta_i(f_0), \forall s_i \in S$, e o menor valor $min_{\forall s_i \in S}(\frac{1}{2}\Delta_i(f_0))$ é retornado.
+
+

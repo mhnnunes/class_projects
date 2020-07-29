@@ -1,0 +1,91 @@
+% Copyright 2019 Matheus Nunes <mhnnunes@dcc.ufmg.br>
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+\documentclass[sigconf]{acmart}
+
+\usepackage{booktabs} % For formal tables
+\usepackage[brazil]{babel}
+%\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}  
+\usepackage{textcomp}
+
+%\usepackage[numbers]{natbib} % for \citeauthor
+
+\usepackage{subcaption}
+\usepackage{footnote}
+\usepackage{float}
+\usepackage{hyperref} % colored links
+
+\usepackage{color}				% Controle das cores
+
+\usepackage[linesnumbered,lined,commentsnumbered]{algorithm2e}
+\usepackage{algpseudocode}
+\usepackage{program}
+\SetAlgorithmName{Algoritmo}{algorithm}{Lista de algoritmos}
+
+\newcommand{\matheus}[1]{ \textbf{\color{magenta}{Matheus: #1}} }
+\newcommand{\tarsila}[1]{ \textbf{\color{blue}{Tarsila: #1}} }
+
+ 
+\newtheorem{theorem}{\textbf{Teorema}}
+\newtheorem{lemma}{\textbf{Lema}}
+
+% Copyright
+\setcopyright{none}
+
+%Conference
+\acmConference[PAA]{Trabalho Prático 1 - Grafos}{Maio 2019}{DCC-UFMG, Belo Horizonte, MG}
+\acmYear{2019}
+\copyrightyear{2019}
+
+
+\begin{document}
+\title{Trabalho Prático 1 - Grafos}
+\subtitle{Projeto e Análise de Algoritmos, 2019-1}
+
+
+\author{Matheus Henrique do Nascimento Nunes}
+\affiliation{%
+  \institution{Universidade Federal de Minas Gerais}
+  \streetaddress{Av. Presidente Antônio Carlos, 6627}
+  \city{Belo Horizonte}
+  \state{Minas Gerais}
+  \postcode{43017-6221}
+}
+\email{mhnnunes@dcc.ufmg.br}
+
+% The default list of authors is too long for headers.
+\renewcommand{\shortauthors}{Nunes, Matheus}
+
+
+% REMOVE ACM REFERENCE FORMAT - MATHEUS
+\settopmatter{printacmref=false}
+
+\renewcommand\footnotetextcopyrightpermission[1]{} % removes footnote with conference information in first column
+
+
+% ADD PAGE NUMBERING - MATHEUS
+\settopmatter{printfolios=true}
+
+\maketitle
+
+\input{introducao.tex}
+\input{formalizacao.tex
+\input{metodologia.tex}
+\input{experimentos.tex}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references.bib}
+
+\end{document}
